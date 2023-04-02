@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 var express = require('express');
-const { addUser, checkUser } = require('./model/user');
+const { addUser, checkUser, getNicknames } = require('./model/user');
 var router = express.Router();
 
 /* GET users listing. */
@@ -21,6 +21,17 @@ router.post('/user', (req, res) => {
 
 router.get('/user', (req, res) => {
   checkUser(req.body)
+  .then(response => {
+    res.json(response.rows);
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500);
+  })
+})
+
+router.get('/nicknames', (req, res) => {
+  getNicknames(req.body)
   .then(response => {
     res.json(response.rows);
   })

@@ -32,9 +32,20 @@ const checkUser = (body) => {
   })
 }
 
-
+const getNicknames = (body) => {
+  return new Promise(function(resolve, reject) {
+    const {nickname, mail, password} = body
+    pool.query('SELECT u.nickname FROM users u; ', (error, results) => {
+      if (error) {
+        reject(error)
+      }
+      resolve(`lala`)
+    })
+  })
+}
 
 module.exports = {
   addUser,
-  checkUser
+  checkUser,
+  getNicknames
 }

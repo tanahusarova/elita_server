@@ -12,7 +12,7 @@ const pool = new Pool({
 
 const getEventById = (id_of_event) => {
   return new Promise(function(resolve, reject) {
-    pool.query('SELECT * FROM event WHERE id = $1', [id_of_event], (error, results) => {
+    pool.query('SELECT * FROM events WHERE event_id = $1', [id_of_event], (error, results) => {
       if (error) {
         reject(error)
       }
@@ -27,7 +27,7 @@ const getEventByDate = (id_of_user, id_of_owner, date) => {
     return new Promise(function(resolve, reject) {
       pool.query('SELECT *' 
       +' FROM events e, observers o, participants p' 
-      +' WHERE e.date = $1 AND o.event_id = e.event_id'
+      +' WHERE e.date_time = $1 AND o.event_id = e.event_id'
       +' AND o.user_id = $2 AND o.event_id = p.event_id'
       +' AND p.user_id = $3 AND o.visible = TRUE',
           [date, id_of_user, id_of_owner], (error, results) => {
@@ -40,7 +40,7 @@ const getEventByDate = (id_of_user, id_of_owner, date) => {
 
   return new Promise(function(resolve, reject) {
     pool.query('SELECT * FROM events e, participants p '
-    + 'WHERE e.date = $1 AND p.event_id = e.event_id AND p.user_id = $2',
+    + 'WHERE e.date_time = $1 AND p.event_id = e.event_id AND p.user_id = $2',
         [date, id_of_owner], (error, results) => {
           if (error) {
             reject(error)
@@ -92,7 +92,7 @@ const addObserver = (body) => {
 const deleteEvent = (id) => {
   return new Promise(function(resolve, reject) {
 //    const id = parseInt(request.params.id)
-    pool.query('DELETE FROM event WHERE id = $1', [id], (error, results) => {
+    pool.query('DELETE FROM events WHERE event_id = $1', [id], (error, results) => {
       if (error) {
         reject(error)
       }
