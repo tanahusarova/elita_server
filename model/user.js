@@ -3,45 +3,23 @@ const { Pool } = require('pg');
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'postgres',
+  database: 'elitadb',
   password: 'heslo1234',
   port: 5432,
 });
 
 const addUser = (body) => {
-  return new Promise(function(resolve, reject) {
     const {nickname, mail, password} = body
-    pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *', [nickname, mail, password], (error, results) => {
-      if (error) {
-        reject(error)
-      }
-      resolve(`A new observer ${user_id} has been added`)
-    })
-  })
+    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *', [nickname, mail, password])
 }
 
 const checkUser = (body) => {
-  return new Promise(function(resolve, reject) {
-    const {mail} = body
-    pool.query('SELECT u.password FROM users u WHERE u.mail = $1', [mail], (error, results) => {
-      if (error) {
-        reject(error)
-      }
-      resolve(`skuska`)
-    })
-  })
+  const {mail} = body
+  return pool.query('SELECT u.password FROM users u WHERE u.mail = $1', [mail]);
 }
 
 const getNicknames = (body) => {
-  return new Promise(function(resolve, reject) {
-    const {nickname, mail, password} = body
-    pool.query('SELECT u.nickname FROM users u; ', (error, results) => {
-      if (error) {
-        reject(error)
-      }
-      resolve(`lala`)
-    })
-  })
+    return pool.query('SELECT u.nickname FROM users u; ');
 }
 
 module.exports = {

@@ -5,8 +5,9 @@ const { addEvent, deleteEvent, getEventById, getEventByDate,
 var router = express.Router();
 
 router.get('/event', (req, res) => {
-    getEventById(req.params.id)
+    getEventById(req.body)
     .then(response => {
+      console.log('skuskaskuska');
       res.json(response.rows);
     })
     .catch(err => {
@@ -27,7 +28,7 @@ router.get('/event', (req, res) => {
   })
   
   router.delete('/event', (req, res) => {
-    deleteEvent(req.params.id)
+    deleteEvent(req.body)
     .then(response => {
       res.status(200).send(response);
     })

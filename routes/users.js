@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 var express = require('express');
-const { addUser, checkUser, getNicknames } = require('./model/user');
+const { addUser, checkUser, getNicknames } = require('../model/user');
 var router = express.Router();
 
 /* GET users listing. */
@@ -9,36 +9,44 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/user', (req, res) => {
-  addUser(req.body)
-  .then(response => {
-    res.status(200).send(response);
-  })
-  .catch(error => {
-    console.log(error);
-    res.status(500).send(error);
-  })
+  addUser(req.body).then(
+    (r) => res.status(200)
+  ).catch(
+    (e) => {
+      console.log(e);
+      res.status(500);
+    }
+  );
+;
 })
 
 router.get('/user', (req, res) => {
   checkUser(req.body)
-  .then(response => {
-    res.json(response.rows);
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500);
-  })
+  .then(
+    (user) => {      
+      res.json(user.rows);
+    } 
+  ).catch(
+    (err) => {      
+      console.log(err);
+      res.status(500);
+    }
+  );
 })
 
+
+
 router.get('/nicknames', (req, res) => {
-  getNicknames(req.body)
-  .then(response => {
-    res.json(response.rows);
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500);
-  })
+  getNicknames(req.body).then(
+    (nicknames) => {      
+      res.json(nicknames.rows);
+    } 
+  ).catch(
+    (err) => {      
+      console.log(err);
+      res.status(500);
+    }
+  );
 })
 
 module.exports = router;
