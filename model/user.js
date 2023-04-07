@@ -10,16 +10,16 @@ const pool = new Pool({
 
 const addUser = (body) => {
     const {nickname, mail, password} = body
-    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *', [nickname, mail, password])
+    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *;', [nickname, mail, password])
 }
 
-const checkUser = (body) => {
-  const {mail} = body
-  return pool.query('SELECT u.password FROM users u WHERE u.mail = $1', [mail]);
+const checkUser = (mail) => {
+  let tmp = 'SELECT u.password FROM users u WHERE u.mail = \'' + mail + '\';';
+  return pool.query(tmp);
 }
 
 const getNicknames = (body) => {
-    return pool.query('SELECT u.nickname FROM users u; ');
+    return pool.query('SELECT u.user_id, u.nickname FROM users u; ');
 }
 
 module.exports = {

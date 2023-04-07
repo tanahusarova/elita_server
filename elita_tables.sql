@@ -30,7 +30,7 @@ CREATE TABLE events(
 	from_time VARCHAR(30),
 	to_time VARCHAR(30),
 	date_time DATE,
-	colour INT,
+	colour VARCHAR(20),
     PRIMARY KEY(event_id),
     CONSTRAINT fk_type
        FOREIGN KEY(type_id) 

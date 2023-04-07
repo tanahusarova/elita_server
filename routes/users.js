@@ -1,7 +1,10 @@
 const crypto = require('crypto');
 var express = require('express');
+
 const { addUser, checkUser, getNicknames } = require('../model/user');
 var router = express.Router();
+const cors = require('cors');
+router.use(cors());
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -20,11 +23,13 @@ router.post('/user', (req, res) => {
 ;
 })
 
-router.get('/user', (req, res) => {
-  checkUser(req.body)
+router.get('/user/:mail', (req, res) => {
+  const mail = req.params.mail;
+  checkUser(mail)
   .then(
     (user) => {      
       res.json(user.rows);
+      console.log(mail);
     } 
   ).catch(
     (err) => {      
