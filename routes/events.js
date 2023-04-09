@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 var express = require('express');
 const { addEvent, deleteEvent, getEventById, getEventByDate, 
-  addParticipant, addObserver } = require('../model/event');
+  addParticipant, addObserver, getComment, addComment, updateEvent } = require('../model/event');
 var router = express.Router();
 const cors = require('cors');
 router.use(cors());
@@ -22,7 +22,9 @@ router.get('/event/:id', (req, res) => {
   router.post('/event', (req, res) => {
     addEvent(req.body)
     .then(response => {
-      res.status(200);
+      res.json(response.rows);
+      console.log(response.rows[0].event_id);
+
     })
     .catch(error => {
       console.log(error);
@@ -30,6 +32,18 @@ router.get('/event/:id', (req, res) => {
     })
   })
   
+  router.put('/update/:id', (req, res) => {
+    updateEvent(req.params.id, req.body)
+    .then(response => {
+      res.json(response.rows);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).send(error);
+    })
+
+  })
+
   router.delete('/event/:id', (req, res) => {
     deleteEvent(req.params.id)
     .then(response => {
@@ -79,6 +93,31 @@ router.get('/event/:id', (req, res) => {
       res.status(500).send(error);
     })
   })
+
+  router.get('/comments/:id', (req, res) => {
+    const id = req.params.id;
+    getComment(id)
+    .then(response => {
+      console.log(response.rows);
+      res.json(response.rows);
+    })
+    .catch(err => {
+      console.log('trala');
+      res.status(500);
+    })
+  })
+
+  router.post('/comments', (req, res) => {
+    addComment(req.body)
+    .then(response => {
+      res.status(200).send(response);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).send(error);
+    })
+  })
+
 
   module.exports = router;
 
