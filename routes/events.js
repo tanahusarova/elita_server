@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 var express = require('express');
 const { addEvent, deleteEvent, getEventById, getEventByDate, 
-  addParticipant, addObserver, getComment, addComment, updateEvent } = require('../model/event');
+  addParticipant, addObserver, getComment, addComment, updateEvent, asyncPromAll, executeQueries } = require('../model/event');
 var router = express.Router();
 const cors = require('cors');
 router.use(cors());
@@ -19,15 +19,26 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
+
   router.post('/event', (req, res) => {
     addEvent(req.body)
     .then(response => {
-      res.json(response.rows);
-      console.log(response.rows[0].event_id);
-
+      res.status(200).send(response);
     })
     .catch(error => {
       console.log(error);
+      res.status(500).send(error);
+    })
+  })
+
+  router.post('/eventpar', (req, res) => {
+    console.log(req.body);
+    executeQueries(req.body)
+    .then(response => {
+      res.status(200).send(response);
+    })
+    .catch(error => {
+      console.log('som tu a padam');
       res.status(500).send(error);
     })
   })

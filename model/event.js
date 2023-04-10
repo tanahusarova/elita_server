@@ -1,4 +1,7 @@
+const { response, query } = require('express');
 const { Pool } = require('pg');
+const { v4: uuidv4 } = require('uuid'); // Import the uuid package
+
 
 const pool = new Pool({
   user: 'postgres',
@@ -33,9 +36,61 @@ const getEventByDate = (id_of_user, id_of_owner, date) => {
 
 //spytat sa ci viem vratit id
 const addEvent = (body) => {
-    const {id_of_type, name, from, to, date, colour } = body;
-    return pool.query('INSERT INTO events (type_id, name, from_time, to_time, date_time, colour) VALUES ($1, $2, $3, $4, $5, $6) RETURNING event_id;', [id_of_type, name, from, to,  date, colour ]);
+  const {id_of_type, name, from, to, date, colour } = body;
+  return pool.query('INSERT INTO events (type_id, name, from_time, to_time, date_time, colour) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;', [id_of_type, name, from, to,  date, colour ]);
 }
+
+
+async function executeQueries(body) {
+  // Get a client from the pool
+  const client = await pool.connect();
+  const{event, participants, observers, comments} = body;
+  const {id_of_type, name, from, to, date, colour } = event;
+  const {user_id_c, comment} = comments;
+
+  try {
+    await client.query('BEGIN');
+    console.log('idem generovat');
+
+    var event_id;
+
+    await client.query('INSERT INTO events (type_id, name, from_time, to_time, date_time, colour) VALUES ($1, $2, $3, $4, $5, $6) RETURNING event_id;', [id_of_type, name, from, to,  date, colour ])
+    .then((res) => {
+      event_id = res.rows[0].event_id;
+      console.log(event_id);
+
+    }
+    ).catch(e => {
+      console.log('padlo');
+    })
+
+    participants.forEach(async participant => {
+      const{user_id_p} = participant;
+      await client.query('INSERT INTO participants (event_id, user_id) VALUES ($1, $2) RETURNING *;', [event_id, user_id_p]);
+    });
+
+    observers.forEach(async observer => {
+      const{user_id_o, visible} = observer;
+      await client.query('INSERT INTO observers (event_id, user_id, visible) VALUES ($1, $2, $3) RETURNING *;', [event_id, user_id_o, visible]);
+    });
+
+    if(comment)
+       await client.query('INSERT INTO comments (event_id, user_id, comment) VALUES ($1, $2, $3) RETURNING *;', [event_id, user_id_c, comment]);
+
+
+    // Commit the transaction
+    await client.query('COMMIT');
+  } catch (e) {
+    // Rollback the transaction on error
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    // Release the client back to the pool
+    client.release();
+  }
+}
+
+
 
 const updateEvent = (event_id, body) => {
   const {id_of_type, name, from, to, date, colour } = body;
@@ -80,5 +135,6 @@ module.exports = {
   addParticipant,
   addObserver,
   getComment,
-  addComment
+  addComment,
+  executeQueries
 }
