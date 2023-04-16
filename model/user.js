@@ -8,13 +8,23 @@ const pool = new Pool({
   port: 5432,
 });
 
-const addUser = (body) => {
+const bcrypt = require('bcrypt');
+
+async function hashPassword(password) {
+  const saltRounds = 5; // Number of salt rounds to use in the hashing process
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+}
+
+async function addUser(body) {
     const {nickname, mail, password} = body
-    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *;', [nickname, mail, password])
+    const hashedPass = await hashPassword(password);
+    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) ON CONFLICT (mail) DO NOTHING;', [nickname, mail, hashedPass]);
 }
 
 const checkUser = (mail) => {
-  let tmp = 'SELECT u.password FROM users u WHERE u.mail = \'' + mail + '\';';
+  let tmp = 'SELECT u.password, u.user_id FROM users u WHERE u.mail = \'' + mail + '\';';
   return pool.query(tmp);
 }
 

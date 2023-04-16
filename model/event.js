@@ -19,16 +19,15 @@ const getEventById = (id) => {
 //potrebujem overit ci ma dany clovek pravo vidiet dany plan a ci chce svoje alebo spolocne
 const getEventByDate = (id_of_user, id_of_owner, date) => {
 
-  let string = 'SELECT * FROM events e, participants p '
-  + 'WHERE e.date_time = \'' + date +'\' AND p.event_id = e.event_id AND p.user_id = '+ id_of_owner +';';
+ // let string = 'SELECT * FROM events e, participants p '
+ // + 'WHERE e.date_time = \'' + date +'\' AND p.event_id = e.event_id AND p.user_id = '+ id_of_owner +';';
 
-  if (id_of_user !== id_of_owner) {
-        string = 'SELECT *' 
+    let string = 'SELECT *' 
          +' FROM events e, observers o, participants p' 
          +' WHERE e.date_time = \''+ date +'\' AND o.event_id = e.event_id'
          +' AND o.user_id = \''+ id_of_user +'\'  AND o.event_id = p.event_id'
           +' AND p.user_id = \''+ id_of_owner +'\';';
-  }
+
 
   return pool.query(string);
 
@@ -96,6 +95,8 @@ const updateEvent = (event_id, body) => {
   const {id_of_type, name, from, to, date, colour } = body;
   let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
                 '\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
+
+  console.log(string);
   return pool.query(string);
 }
 
@@ -116,7 +117,7 @@ const deleteEvent = (id) => {
 }
 
 const getComment = (id) => {
-  let string = 'SELECT c.comment, u.nickname FROM comments c, users u WHERE c.user_id = u.user_id AND c.event_id = ' + id + ';'
+  let string = 'SELECT c.comment, u.nickname, u.user_id FROM comments c, users u WHERE c.user_id = u.user_id AND c.event_id = ' + id + ';'
   return pool.query(string);
 }
 
