@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 
+
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
@@ -32,6 +33,15 @@ const getEventByDate = (id_of_user, id_of_owner, date) => {
   return pool.query(string);
 
 }
+
+const getEventForCalendar = (id_of_user) => {
+
+  // let string = 'SELECT * FROM events e, participants p '
+  // + 'WHERE e.date_time = \'' + date +'\' AND p.event_id = e.event_id AND p.user_id = '+ id_of_owner +';';
+  
+   return pool.query('SELECT e.date_time, e.colour FROM events e, participants p WHERE p.user_id = $1 AND e.event_id = p.event_id;', [id_of_user]);
+ 
+ }
 
 //spytat sa ci viem vratit id
 const addEvent = (body) => {
@@ -91,14 +101,33 @@ async function executeQueries(body) {
 
 
 
-const updateEvent = (event_id, body) => {
-  const {id_of_type, name, from, to, date, colour } = body;
+async function updateEvent(event_id, body) {
+  const {id_of_type, name, from, to, date, colour, comment, user_id} = body;
   let string = 'UPDATE events SET type_id = ' + id_of_type + ', name = \'' + name + '\', from_time = \''+ from +
                 '\', to_time = \''+ to +'\', date_time =\''+ date +'\', colour =\'' + colour + '\' WHERE event_id = '+ event_id + ';';
+  
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-  console.log(string);
-  return pool.query(string);
+    await client.query(string);
+    await client.query('DELETE FROM comments WHERE event_id = '+ event_id + ';');
+    if(comment)
+        await client.query('INSERT INTO comments (event_id, user_id, comment) VALUES ($1, $2, $3) RETURNING *;' , [event_id, user_id, comment]);
+        
+
+    await client.query('COMMIT');
+
+  } catch (e) {
+    // Rollback the transaction on error
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    // Release the client back to the pool
+    client.release();
+  }
 }
+
 
 const addParticipant = (body) => {
     const {event_id, user_id} = body;
@@ -127,6 +156,7 @@ const addComment = (body) => {
 }
 
 
+
 module.exports = {
   addEvent,
   deleteEvent,
@@ -137,5 +167,6 @@ module.exports = {
   addObserver,
   getComment,
   addComment,
-  executeQueries
+  executeQueries,
+  getEventForCalendar
 }

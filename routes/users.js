@@ -9,9 +9,11 @@ const cors = require('cors');
 router.use(cors());
 
 function verifyToken(req, res, next) {
-  const authHeader = req.headers.authorization;
+  console.log(req.headers);
+  const authHeader = req.headers.authentication;
   if (authHeader) {
     const token = authHeader.split(' ')[1];
+    console.log(token)
     jwt.verify(token, 'your-jwt-secret', (err, user) => {
       if (err) {
         return res.sendStatus(403);

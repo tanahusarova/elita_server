@@ -1,12 +1,30 @@
 const crypto = require('crypto');
 var express = require('express');
 const { addEvent, deleteEvent, getEventById, getEventByDate, 
-  addParticipant, addObserver, getComment, addComment, updateEvent, asyncPromAll, executeQueries } = require('../model/event');
+  addParticipant, addObserver, getComment, addComment, updateEvent, asyncPromAll, executeQueries, getEventForCalendar } = require('../model/event');
 var router = express.Router();
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 router.use(cors());
 
-router.get('/event/:id', (req, res) => {
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authentication;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, 'your-jwt-secret', (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
+router.get('/event/:id', verifyToken, (req, res) => {
     const id = req.params.id;
     getEventById(id)
     .then(response => {
@@ -32,7 +50,6 @@ router.get('/event/:id', (req, res) => {
   })
 
   router.post('/eventpar', (req, res) => {
-    console.log(req.body);
     executeQueries(req.body)
     .then(response => {
       res.status(200).send(response);
@@ -46,7 +63,7 @@ router.get('/event/:id', (req, res) => {
   router.put('/update/:id', (req, res) => {
     updateEvent(req.params.id, req.body)
     .then(response => {
-      res.json(response.rows);
+      res.json(response);
     })
     .catch(error => {
       console.log(error);
@@ -65,7 +82,7 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
-  router.get('/event-date', (req, res) => {
+  router.get('/event-date', verifyToken, (req, res) => {
     const param1 = req.query.param1; // Extract the value of 'param1'
     const param2 = req.query.param2;
     const param3 = req.query.param3;
@@ -83,7 +100,21 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
-  router.post('/participant', (req, res) => {
+  router.get('/calendar/:user', verifyToken, (req, res) => {
+    getEventForCalendar(req.params.user)
+    .then(response => {
+      res.json(response.rows);
+ //     console.log(req.params.date);
+
+    })
+    .catch(error => {
+      console.log('som tu lalal');
+      res.status(500).send(error);
+
+    })
+  })
+
+  router.post('/participant', verifyToken, (req, res) => {
     addParticipant(req.body)
     .then(response => {
       res.status(200).send(response);
@@ -94,7 +125,7 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
-  router.post('/observer', (req, res) => {
+  router.post('/observer', verifyToken, (req, res) => {
     addObserver(req.body)
     .then(response => {
       res.status(200).send(response);
@@ -105,7 +136,7 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
-  router.get('/comments/:id', (req, res) => {
+  router.get('/comments/:id', verifyToken, (req, res) => {
     const id = req.params.id;
     getComment(id)
     .then(response => {
@@ -118,7 +149,7 @@ router.get('/event/:id', (req, res) => {
     })
   })
 
-  router.post('/comments', (req, res) => {
+  router.post('/comments', verifyToken, (req, res) => {
     addComment(req.body)
     .then(response => {
       res.status(200).send(response);
