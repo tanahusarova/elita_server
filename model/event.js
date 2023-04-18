@@ -2,14 +2,12 @@ const { response, query } = require('express');
 const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
-
-
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'elitadb',
-  password: 'heslo1234',
-  port: 5432,
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.POSTGRES_PORT,
 });
 
 

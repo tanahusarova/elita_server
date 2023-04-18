@@ -32,17 +32,34 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/register', (req, res) => {
-  addUser(req.body).then(
-    (r) => res.status(200)
-  ).catch(
-    (e) => {
-      console.log(e);
-      res.status(500);
+router.post('/register', async (req, res) => {
+  const { nickname, mail, password } = req.body;
+  try {
+    const check = await checkUser(mail);
+    console.log('checkol');
+    if (check.rows.length === 0) {
+        console.log('som v checku');
+        const add = await addUser(req.body);
+        if(add){
+          console.log('som v adde');
+           const token = jwt.sign({ email: mail }, 'your-jwt-secret');
+           res.json({ token });
+        }
+        else{
+          res.sendStatus(401);
+        }
+  
+    } else {
+      res.sendStatus(401);
     }
-  );
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500);
+  }
 ;
 })
+
+
 
 
 router.post('/login', async (req, res) => {
