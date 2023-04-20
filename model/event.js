@@ -3,11 +3,10 @@ const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 
@@ -60,6 +59,13 @@ async function executeQueries(body) {
     console.log('idem generovat');
 
     var event_id;
+
+    console.log(id_of_type);
+    console.log(name);
+    console.log(from);
+    console.log(to);
+    console.log(date);
+    console.log(colour);
 
     await client.query('INSERT INTO events (type_id, name, from_time, to_time, date_time, colour) VALUES ($1, $2, $3, $4, $5, $6) RETURNING event_id;', [id_of_type, name, from, to,  date, colour ])
     .then((res) => {
