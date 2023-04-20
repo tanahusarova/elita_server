@@ -1,0 +1,27 @@
+Tatiana Husarova
+Elita
+4.tyzden (3.4 - 9.4)
+
+plan: venovat sa databaze, otestovat zapisovanie do databazy, ak sa podari vyriesit aj vykreslovanie na frontende
+
+spravene:
+frontend:
+b3d5d47 Implement adding event to database with participants and observer
+c159551 Save before changes
+15c0994 Save before changes
+5766b34 Implement button for showing events from database
+
+backend:
+39621fa Add update event function
+f4692c0 edit backend errors, test existing methods
+4a137fc edit of routes
+
+zmena: 
+rozbehala som si komunikaciu s databazou
+zapisovanie a vykreslovanie eventov
+a zacala som riesit aj ich update po zmene
+
+plan: 
+doriesit update zmenenych eventov
+odladit chyby
+zapisat do databazy novoprihlaseneho uzivatela a overit uzivatela po prihlaseni

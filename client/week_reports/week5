@@ -1,0 +1,26 @@
+Tatiana Husarova
+Elita
+5.tyzden (10.4 - 16.4)
+
+povodny plan: 
+doriesit update zmenenych eventov
+odladit chyby
+zapisat do databazy novoprihlaseneho uzivatela a overit uzivatela po prihlaseni
+
+spravene:
+frontend:
+05f66bc Add authentization
+a1b95a4 Update existing event, Delete existing event, Render events without button
+9d9ee5c Fix writing event to database
+
+backend:
+b6459b2 Add paths for authentication
+1f6d164 Fix writing event to database
+
+
+zmena: 
+nestihla som otestovat autentizaciu, 
+opravila som viacero chyb pri komunikacii s databazou a ich vykreslovani
+
+plan: 
+dokoncit autentizaciu, zavesit na server
