@@ -115,7 +115,7 @@ async function updateEvent(event_id, body) {
     await client.query('BEGIN');
 
     await client.query(string);
-    await client.query('DELETE FROM comments WHERE event_id = '+ event_id + ';');
+    await client.query('DELETE FROM comments WHERE event_id = '+ event_id + ' AND user_id = ' + user_id + ';');
     if(comment)
         await client.query('INSERT INTO comments (event_id, user_id, comment) VALUES ($1, $2, $3) RETURNING *;' , [event_id, user_id, comment]);
         
