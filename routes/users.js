@@ -73,7 +73,6 @@ router.post('/login', async (req, res) => {
       if (passwordMatches) {
         const token = jwt.sign({ email: user.email }, 'your-jwt-secret');
         const id = user.user_id;
-        console.log({ token, id });
         res.json({ token, id });
       } else {
         res.sendStatus(401);
