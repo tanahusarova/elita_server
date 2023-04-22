@@ -4,9 +4,7 @@ const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: false
 });
 
 
