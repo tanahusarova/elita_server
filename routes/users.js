@@ -66,7 +66,9 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    console.log("aaa")
     const result = await checkUser(email);
+    console.log("aaa1234")
     if (result.rows.length > 0) {
       const user = result.rows[0];
       const passwordMatches = await bcrypt.compare(password, user.password);

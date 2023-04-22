@@ -2,7 +2,9 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: false,
+  ssl: process.env.NODE_ENV == "dev" ? false : {
+    rejectUnauthorized: false
+  }
 });
 
 const bcrypt = require('bcrypt');

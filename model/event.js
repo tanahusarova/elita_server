@@ -4,10 +4,10 @@ const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: false
+  ssl: process.env.NODE_ENV == "dev" ? false : {
+    rejectUnauthorized: false
+  }
 });
-
-console.log(process.env.DATABASE_URL)
 
 const getEventById = (id) => {
     return pool.query('SELECT * FROM events WHERE event_id = $1;', [id]);

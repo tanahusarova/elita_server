@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "NODE_ENV=dev nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
