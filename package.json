@@ -2,6 +2,9 @@
   "name": "myapp",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "NODE_ENV=dev nodemon index.js"
