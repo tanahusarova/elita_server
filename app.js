@@ -1,9 +1,10 @@
-
+  
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
 
 var indexRouter = require('./index');
 var usersRouter = require('./routes/users');
@@ -21,10 +22,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+var express = require('express');
+var htmlRouter = express.Router();
+const cors = require('cors');
+htmlRouter.use(cors());
+
+/* GET home page. */
+htmlRouter.get('/', function(req, res, next) {
+  res.render('index', { title: 'ever' });
+});
+
+
+app.use('/', htmlRouter);
 app.use('/users', usersRouter);
 app.use('/events', eventsRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
