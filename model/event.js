@@ -7,6 +7,7 @@ const pool = new Pool({
   ssl: false
 });
 
+console.log(process.env.DATABASE_URL)
 
 const getEventById = (id) => {
     return pool.query('SELECT * FROM events WHERE event_id = $1;', [id]);
