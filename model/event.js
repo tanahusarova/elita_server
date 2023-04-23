@@ -36,7 +36,7 @@ const getEventForCalendar = (id_of_user) => {
   // let string = 'SELECT * FROM events e, participants p '
   // + 'WHERE e.date_time = \'' + date +'\' AND p.event_id = e.event_id AND p.user_id = '+ id_of_owner +';';
   
-   return pool.query('SELECT e.date_time, e.colour FROM events e, participants p WHERE p.user_id = $1 AND e.event_id = p.event_id;', [id_of_user]);
+   return pool.query('SELECT DISTINCT e.date_time, e.colour FROM events e, participants p WHERE p.user_id = $1 AND e.event_id = p.event_id;', [id_of_user]);
  
  }
 
