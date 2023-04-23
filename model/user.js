@@ -1,15 +1,9 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  /*
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV == "dev" ? false : {
-    rejectUnauthorized: false
-  }
-  */
   user: 'postgres',
   host: 'localhost',
-  database: 'postgres',
+  database: 'elitadb',
   password: 'heslo1234',
   port: 5432,
 });
@@ -18,14 +12,20 @@ const bcrypt = require('bcrypt');
 
 async function hashPassword(password) {
   const saltRounds = 5; // Number of salt rounds to use in the hashing process
-  const salt = await bcrypt.genSalt(saltRounds);
-  const hash = await bcrypt.hash(password, salt);
+  console.log(password);
+  console.log(saltRounds);
+  const hash = await bcrypt.hash(password, saltRounds);
   return hash;
 }
 
 async function addUser(body) {
     const {nickname, mail, password} = body
+    console.log(nickname);
+
+    console.log('heslo je este ok');
     const hashedPass = await hashPassword(password);
+    console.log('narazil na problem');
+
     console.log('INSERT INTO users (nickname, mail, password) VALUES (\''+ nickname + '\',\''+ mail + '\' , \''+ hashedPass +'\') ON CONFLICT (mail) DO NOTHING;'); 
     return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) ON CONFLICT (mail) DO NOTHING;', [nickname, mail, hashedPass]);
 }

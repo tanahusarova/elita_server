@@ -43,6 +43,7 @@ router.post('/register', async (req, res) => {
     console.log('checkol');
     if (check.rows.length === 0) {
         console.log('som v checku');
+        console.log(req.body);
         const add = await addUser(req.body);
         if(add){
           console.log('som v adde');
@@ -72,11 +73,13 @@ router.post('/login', async (req, res) => {
   try {
     console.log("aaa")
     const result = await checkUser(email);
-    console.log("aaa1234")
     if (result.rows.length > 0) {
+      console.log("aaa1234")
       const user = result.rows[0];
       const passwordMatches = await bcrypt.compare(password, user.password);
       if (passwordMatches) {
+        console.log("aaa1234555")
+
         const token = jwt.sign({ email: user.email }, 'your-jwt-secret');
         const id = user.user_id;
         res.json({ token, id });

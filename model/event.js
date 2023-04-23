@@ -3,16 +3,9 @@ const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
-  /*
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV == "dev" ? false : {
-    rejectUnauthorized: false
-  }
-  */
-
   user: 'postgres',
   host: 'localhost',
-  database: 'postgres',
+  database: 'elitadb',
   password: 'heslo1234',
   port: 5432,
 });
@@ -67,7 +60,6 @@ async function executeQueries(body) {
     console.log('idem generovat');
 
     var event_id;
-
     console.log(id_of_type);
     console.log(name);
     console.log(from);

@@ -1,8 +1,8 @@
 CREATE TABLE users(
 	user_id INT GENERATED ALWAYS AS IDENTITY,
 	nickname VARCHAR(20),
-	mail VARCHAR(50),
-	password VARCHAR(50),
+	mail VARCHAR(50) UNIQUE,
+	password VARCHAR(500),
     PRIMARY KEY(user_id)
 	);
 
