@@ -7,6 +7,10 @@ const { addUser, checkUser, getNicknames } = require('../model/user');
 var router = express.Router();
 const cors = require('cors');
 router.use(cors());
+const bodyParser = require('body-parser');
+
+// Use bodyParser middleware with express.Router()
+router.use(bodyParser.json());
 
 function verifyToken(req, res, next) {
   console.log(req.headers);
