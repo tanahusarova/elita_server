@@ -3,11 +3,10 @@ const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'elitadb',
-  password: 'heslo1234',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV == "dev" ? false : {
+    rejectUnauthorized: false
+  }
 });
 console.log(process.env.DATABASE_URL)
 
