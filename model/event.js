@@ -3,19 +3,19 @@ const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid'); // Import the uuid package
 
 const pool = new Pool({
-
+/*
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV == "dev" ? false : {
     rejectUnauthorized: false
   }
+  */
   
-  /*
   user: 'postgres',
   host: 'localhost',
   database: 'elitadb',
   password: 'heslo1234',
   port: 5432,
-  */
+
 });
 console.log(process.env.DATABASE_URL)
 
@@ -87,16 +87,16 @@ async function executeQueries(body) {
 
     participants.forEach(async participant => {
       const{user_id_p} = participant;
-      await client.query('INSERT INTO participants (event_id, user_id) VALUES ($1, $2) RETURNING *;', [event_id, user_id_p]);
+      await client.query('INSERT INTO participants (event_id, user_id) VALUES ($1, $2);', [event_id, user_id_p]);
     });
 
     observers.forEach(async observer => {
       const{user_id_o, visible} = observer;
-      await client.query('INSERT INTO observers (event_id, user_id, visible) VALUES ($1, $2, $3) RETURNING *;', [event_id, user_id_o, visible]);
+      await client.query('INSERT INTO observers (event_id, user_id, visible) VALUES ($1, $2, $3);', [event_id, user_id_o, visible]);
     });
 
     if(comment)
-       await client.query('INSERT INTO comments (event_id, user_id, comment) VALUES ($1, $2, $3) RETURNING *;', [event_id, user_id_c, comment]);
+       await client.query('INSERT INTO comments (event_id, user_id, comment) VALUES ($1, $2, $3);', [event_id, user_id_c, comment]);
 
 
     // Commit the transaction

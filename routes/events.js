@@ -20,6 +20,7 @@ function verifyToken(req, res, next) {
       next();
     });
   } else {
+    console.log('nepreslo overenie tokenu')
     res.sendStatus(401);
   }
 }
