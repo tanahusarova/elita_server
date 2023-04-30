@@ -47,8 +47,9 @@ router.post('/register', async (req, res) => {
         const add = await addUser(req.body);
         if(add){
           console.log('som v adde');
+          let id = add.rows[0].user_id;
            const token = jwt.sign({ email: mail }, 'your-jwt-secret');
-           res.json({ token });
+           res.json({ token, id });
         }
         else{
           res.sendStatus(401);

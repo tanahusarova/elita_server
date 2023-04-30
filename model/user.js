@@ -33,7 +33,7 @@ async function addUser(body) {
     console.log('narazil na problem');
 
     console.log('INSERT INTO users (nickname, mail, password) VALUES (\''+ nickname + '\',\''+ mail + '\' , \''+ hashedPass +'\') ON CONFLICT (mail) DO NOTHING;'); 
-    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) ON CONFLICT (mail) DO NOTHING;', [nickname, mail, hashedPass]);
+    return pool.query('INSERT INTO users (nickname, mail, password) VALUES ($1, $2, $3) RETURNING *;', [nickname, mail, hashedPass]);
 }
 
 const checkUser = (mail) => {
