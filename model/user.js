@@ -5,13 +5,6 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV == "dev" ? false : {
     rejectUnauthorized: false
   }
-  /*
-  user: 'postgres',
-  host: 'localhost',
-  database: 'elitadb',
-  password: 'heslo1234',
-  port: 5432,
-  */
 
 });
 const bcrypt = require('bcrypt');
